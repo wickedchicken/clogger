@@ -5,7 +5,7 @@
 
 int clog_register_fd(int fd, int defaults);
 int clog_register_fp(FILE *, int defaults);
-int clog_register_fs(const char *filename, int append, int defaults);
+int clog_register_fn(const char *filename, int append, int defaults);
 int clog_deregister(int logid);
 
 int clog_set_option(int logid, int option, int value);

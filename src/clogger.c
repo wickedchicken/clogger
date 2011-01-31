@@ -130,7 +130,7 @@ int clog_register_fp(FILE *fp, int defaults){
   return idx;
 }
 
-int clog_register_fs(const char *filename, int append, int defaults){
+int clog_register_fn(const char *filename, int append, int defaults){
   int idx;
   int result;
   if(CLOGGER_ERR_OK != (result = find_or_make_slot(&idx))){ return result; }
@@ -406,8 +406,8 @@ static int clog_log_internal(int logid, const char *module, int severity, const 
 
 /*******/
 
-    snprintf(header + wrote_idx, (MAX_HEADER - wrote_idx), "[%36s]\t", buf);
-    wrote_idx += 39;
+    snprintf(header + wrote_idx, (MAX_HEADER - wrote_idx), "[%32s]\t", buf);
+    wrote_idx += 35;
   }
   if(CLOGGER_TIME_EPOCH == clog_registered_ids[logid].time){
     struct timeval tv;
@@ -420,10 +420,6 @@ static int clog_log_internal(int logid, const char *module, int severity, const 
   if(clog_registered_ids[logid].pid){
     snprintf(header + wrote_idx, (MAX_HEADER - wrote_idx), "%06u\t",getpid());
     wrote_idx += 7;
-  }
-  if(clog_registered_ids[logid].mod){
-    snprintf(header + wrote_idx, (MAX_HEADER - wrote_idx), "[%-20s]\t",module);
-    wrote_idx += 23;
   }
   if(clog_registered_ids[logid].sev){
     const char* red = "\033[0;40;31m";
@@ -468,6 +464,10 @@ static int clog_log_internal(int logid, const char *module, int severity, const 
 
     snprintf(header + wrote_idx, (MAX_HEADER - wrote_idx), "%s]\t",normal);
     wrote_idx += 2 + strlen(normal);
+  }
+  if(clog_registered_ids[logid].mod){
+    snprintf(header + wrote_idx, (MAX_HEADER - wrote_idx), "[%s]\t",module);
+    wrote_idx += strlen(module) + 3;
   }
 
   assert(wrote_idx < MAX_HEADER);
